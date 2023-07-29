@@ -55,6 +55,10 @@ body {
     background-color: lightgrey;
 }
 
+.operatorClicked {
+    border-color: orange;
+}
+
 #footer{
     border: 0.1px solid black;
     flex: 1 1 auto;
