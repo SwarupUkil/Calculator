@@ -18,6 +18,9 @@ let columnGrid = [];
 let grid = [];
 let gridSize = 4;
 let input = '0';
+let firstNum, operator, secondNum;
+firstNum = operator = secondNum = '';
+let valueVerifier = [0, 0, 0];
 
 const calculatorOrdering =  [
                                 ['7', '8', '9', '/'],
@@ -37,7 +40,15 @@ display.textContent = input;
 // Special case for the clear function.
 clear.addEventListener('click', (event) => {
     input = '0';
+    valueVerifier = [0, 0, 0];
+    firstNum = operator = secondNum = '';
     display.textContent = input;
+});
+clear.addEventListener('mouseover', (event) => {
+    event.currentTarget.classList.add('hovering');
+});
+clear.addEventListener('mouseleave', (event) => {
+    event.currentTarget.classList.remove('hovering');
 });
 
 
@@ -47,12 +58,21 @@ function createGrid(){
         for(let v = 0; v < gridSize; v++){
             columnClone = column.cloneNode();
             columnClone.textContent = calculatorOrdering[i][v];
-            columnClone.addEventListener('click', 
-            (event) => {
-                input += event.currentTarget.textContent;
-                display.textContent = input;
-                // event.currentTarget.classList.add('black');
+            columnClone.addEventListener('click', (event) => {evaluate(event);});
+            columnClone.addEventListener('mouseover', (event) => {
+                event.currentTarget.classList.add('hovering');
             });
+            columnClone.addEventListener('mouseleave', (event) => {
+                event.currentTarget.classList.remove('hovering');
+            });
+
+            if ((v === gridSize - 1) || 
+                (!parseInt(calculatorOrdering[i][0]) && v !== 0)){ // Row 4 is a specific case.
+                columnClone.classList.add('operator');
+            }else{
+                columnClone.classList.add('number');
+            }
+
             columnGrid.push(columnClone);
         }
     
@@ -76,8 +96,8 @@ let subtract = (a, b) => `${+a - +b}`;
 let multiply = (a, b) => `${+a * +b}`;
 let divide = (a, b) => `${Math.round(+a / +b)}`;
 
-function operate(a, b, operator){
-    switch(operator){
+function operate(a, suboperator, b){
+    switch(suboperator){
         case '+':
             return add(a, b);
         case '-':
@@ -87,4 +107,46 @@ function operate(a, b, operator){
         case '/':
             return divide(a, b);
     }
+}
+
+function evaluate(event){
+
+    let value = event.currentTarget.textContent;
+    // console.log(firstNum, secondNum);
+
+    if (event.currentTarget.classList.contains('number')){ // Case of number input
+        
+        if (!valueVerifier[0]){
+            if (value !== '0'){
+                firstNum += value;
+                valueVerifier[0] = 1;
+            }
+            display.textContent = firstNum;
+        }else if (!valueVerifier[1]){
+            firstNum += value;
+            display.textContent = firstNum;
+        }else if(!valueVerifier[2]){
+            secondNum = value
+            valueVerifier[2] = (value !== '0') ? 1 : 0;
+            display.textContent = secondNum;
+        }else{
+            secondNum += value;
+            display.textContent = secondNum;
+        }
+
+    }else{ // Case of operator is input.
+        if (value === '=' && !!valueVerifier[2]){
+            firstNum = operate(firstNum, operator, secondNum);
+            operator = secondNum = '';
+            display.textContent = firstNum;
+            valueVerifier = firstNum !== '0'? [1, 0, 0]: [0, 0, 0];
+        }else if (value !== '=' && !!valueVerifier[0] && !valueVerifier[2]){
+            operator = value;
+            valueVerifier[1] = 1;
+        }
+    }
+
+    console.log(firstNum, secondNum);
+    // input += event.currentTarget.textContent;
+    //  = firstNum + operator + secondNum;
 }

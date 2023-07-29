@@ -51,6 +51,10 @@ body {
     flex: 1;
 }
 
+.hovering {
+    background-color: lightgrey;
+}
+
 #footer{
     border: 0.1px solid black;
     flex: 1 1 auto;
