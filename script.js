@@ -1,11 +1,3 @@
-// * irk 1: each div isn't same size, like bottom row is not equivalent to above.
-// Give each number a class and each operation a class.
-
-// Hover -> lights up each button by some percentage I guess.
-// Pressing -> causes a border to appear for a second.
-// input length max needed. 
-// Make sure to replace the first zero. Guess its a leading zero things.
-// rounding needs to be better.
 
 // Setup variables
 const keypad = document.querySelector('.keypad');
@@ -135,12 +127,25 @@ function evaluate(event){
             operator = secondNum = '';
             operatorBool = false;
 
+            // Deletion function repeated in the next two parts.
             deleting = Array.from(document.querySelectorAll('.operatorClicked'));
             deleting.forEach((operationDiv) => {
                 operationDiv.classList.remove('operatorClicked');
             });
 
         }else if (value !== '=' && value !== '.' && secondNum === ''){
+            operator = value;
+            operatorBool = true;
+
+            deleting = Array.from(document.querySelectorAll('.operatorClicked'));
+            deleting.forEach((operationDiv) => {
+                operationDiv.classList.remove('operatorClicked');
+            });
+            event.currentTarget.classList.add('operatorClicked');
+        }else if (value !== '=' && value !== '.' && secondNum !== ''){
+            input = operate(firstNum, operator, secondNum);
+            firstNum = input;
+            operator = secondNum = '';
             operator = value;
             operatorBool = true;
 
