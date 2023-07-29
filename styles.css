@@ -15,6 +15,7 @@ body {
 .container {
     display: flex;
     flex-direction: column;
+    gap: 8px;
 }
 
 .display {
@@ -24,7 +25,6 @@ body {
     justify-content: space-between;
     /* width: 100%; */
     flex: 1 1 auto;
-    margin-bottom: 8px;
     padding: 20px 4px;
 }
 
@@ -49,4 +49,9 @@ body {
     max-width: 40px;
     /* display: flex; */
     flex: 1;
+}
+
+#footer{
+    border: 0.1px solid black;
+    flex: 1 1 auto;
 }
